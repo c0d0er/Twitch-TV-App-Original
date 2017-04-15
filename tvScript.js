@@ -1,4 +1,5 @@
-function loadTwitch(search) {
+function loadTwitch() {
+    var search = $('input').val();
     var tCha = ["ESL_SC2", "OgamingSC2", "cretetion", "freecodecamp", "storbeck", "habathcx", "RobotCaleb", "medrybw", "noobs2ninjas", "food", "brunofin", "comster404"];
     var tUrl = "https://api.twitch.tv/kraken/streams/";
     var cId = "?client_id=7l3od9sx1rsri9b30l2p9ddxibl0bk0";
@@ -16,6 +17,7 @@ function loadTwitch(search) {
         $.getJSON(tUrl + val + cId, function(data) {
             if (data.stream === null) {
                 $.getJSON("https://api.twitch.tv/kraken/channels/" + val + cId, function(response) {
+
                     hNodesOff = "<div class='offarea'><a href='https://www.twitch.tv/" +
                         val + "' target='_blank'><img src='" + response.logo + "' id='offlogo'><span class='twitchTitle'>" + response.display_name +
                         "</span><span class='line' id='poff'>offline</span></div>";
@@ -23,7 +25,7 @@ function loadTwitch(search) {
                     $(".offarea:last").after($(".closedarea"));
                 })
             } else {
-
+                //var logo=data.stream.channel.logo;
                 var preview = data.stream.preview.medium;
                 var status = data.stream.channel.status;
                 var onName = data.stream.channel.display_name;
@@ -44,31 +46,38 @@ function loadTwitch(search) {
             $twitchDiv.append(hNodesClosed);
         })
     })
-
-    $("#all").click(function() {
-        $(".onarea").show();
-        $(".offarea").show();
-        $(".closedarea").show();
-    })
-    $("#on").click(function() {
-        $(".offarea").hide();
-        $(".onarea").show();
-        $(".closedarea").hide();
-    })
-    $("#off").click(function() {
-        $(".onarea").hide();
-        $(".offarea").show();
-        $(".closedarea").show();
-    })
 }
 loadTwitch();
-
+$("#all").click(function() {
+    $(".onarea").show();
+    $(".offarea").show();
+    $(".closedarea").show();
+})
+$("#on").click(function() {
+    $(".offarea").hide();
+    $(".onarea").show();
+    $(".closedarea").hide();
+})
+$("#off").click(function() {
+    $(".onarea").hide();
+    $(".offarea").show();
+    $(".closedarea").show();
+})
+var timer;
 $("#twitchSearch").on("input", function() {
+    if (timer) {
+        clearTimeout(timer);
+    }
     $("#twitchDiv").empty();
-    loadTwitch($(this).val()); //or use loadTwitch($('input').val());//---> why cannot use loadTwitch($('input:search').val());?
+    timer = setTimeout(loadTwitch, 10);
 });
+/*$("#twitchSearch").on("input", function(){
+     $("#twitchDiv").empty();
+ loadTwitch($(this).val());//or use loadTwitch($('input').val());//---> why cannot use loadTwitch($('input:search').val());?
+});*/
 $("#form-container").on("submit", function(e) {
     e.preventDefault();
     // $("#twitchDiv").empty();
     //loadTwitch($('#twitchSearch').val());
+    //loadTwitch();//--->why cannot back to original
 });
